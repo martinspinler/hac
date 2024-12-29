@@ -1,0 +1,11 @@
+[project]
+name = "hac"
+version = "0.1.0"
+dependencies = [
+	"paho.mqtt",
+	"pyserial",
+	"bsbcontroller @ git+ssh://git@github.com/martinspinler/bsb-controller",
+]
+
+[project.scripts]
+hac = "hac.hac:main"
