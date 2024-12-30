@@ -62,8 +62,8 @@ class MqttBsbClient(threading.Thread):
                     val = func(val)
                 self._bsb.set_value(request, val)
 
-    def _bsb_callback(self, request, value):
-        request = self.translations.get(request, request)
+    def _bsb_callback(self, name, value):
+        request = self.translations.get(name, name)
         if request in self._enabled_topics:
             added = False
             if request not in self._values:
