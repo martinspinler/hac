@@ -81,7 +81,8 @@ class MqttBsbClient(threading.Thread):
         if telegram.cmd in [Command.INF]:
             self._bsb_callback(telegram.name, telegram.value)
 
-    def _publish_config(self, name, payload_template, component="sensor"):
+    def _publish_config(self, request, payload_template, component="sensor"):
+        name = self.translations.get(request, request)
         payload = payload_template | {
             "~": f"{self._prefix}/{name}",
             "name": name,
@@ -89,11 +90,10 @@ class MqttBsbClient(threading.Thread):
         }
 
         self._client.publish(topic=f"homeassistant/{component}/boiler/{name}/config", payload=json.dumps(payload), qos=0, retain=True)
-        self._enabled_topics.append(name)
+        self._enabled_topics.append(request)
 
     def setup_mqtt_ha_discovery(self):
         for request, template, *opt in self.items:
-            name = self.translations.get(request, request)
             kwargs = opt[0] if opt else {}
             #print(name, template, kwargs)
-            self._publish_config(name, template, **kwargs)
+            self._publish_config(request, template, **kwargs)
