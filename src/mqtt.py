@@ -45,6 +45,8 @@ class MqttBsbClient(threading.Thread):
         self._bsb.loggers.append(self._bsb_log)
 
         self.setup_mqtt_ha_discovery()
+        for request, template, *opt in self.items:
+            self._bsb.get_value(request)
 
     def _on_message(self, client, userdata, msg):
         topic = msg.topic
