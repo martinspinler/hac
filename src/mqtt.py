@@ -4,6 +4,7 @@ import json
 
 import paho.mqtt.client as mqtt_client
 from bsbcontroller.types import Command
+from bsbcontroller.telegram import Telegram
 
 
 class MqttBsbClient(threading.Thread):
@@ -79,6 +80,8 @@ class MqttBsbClient(threading.Thread):
 
     def _bsb_log(self, telegram):
         if telegram.cmd in [Command.INF]:
+            self._bsb_callback(telegram.name, telegram.value)
+        elif telegram.cmd == Command.ANS and telegram.dst != Telegram.DEF_SRC:
             self._bsb_callback(telegram.name, telegram.value)
 
     def _publish_config(self, request, payload_template, component="sensor"):
